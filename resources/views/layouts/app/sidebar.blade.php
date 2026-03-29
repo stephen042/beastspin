@@ -15,6 +15,12 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="arrow-path" :href="route('spin')" :current="request()->routeIs('spin')" wire:navigate>
+                        {{ __('Spin to Win') }}
+                    </flux:sidebar.item>
+                    <flux:sidebar.item icon="currency-dollar" :href="route('withdraw')" :current="request()->routeIs('withdraw')" wire:navigate>
+                        {{ __('Withdraw') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
