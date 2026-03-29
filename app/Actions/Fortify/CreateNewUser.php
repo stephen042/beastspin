@@ -7,6 +7,7 @@ use App\Concerns\ProfileValidationRules;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
+use App\Rules\ValidWincode;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -22,6 +23,7 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
+            'wincode' => $this->wincodeRules(),
         ])->validate();
 
         return User::create([
@@ -29,5 +31,15 @@ class CreateNewUser implements CreatesNewUsers
             'email' => $input['email'],
             'password' => $input['password'],
         ]);
+    }
+
+    protected function wincodeRules(): array
+    {
+        return [
+            'required',
+            'string',
+            'max:255',
+            new ValidWincode,
+        ];
     }
 }

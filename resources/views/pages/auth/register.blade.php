@@ -30,6 +30,17 @@
                 placeholder="email@example.com"
             />
 
+            <!-- wincode  -->
+            <flux:input
+                name="wincode"
+                :label="__('Wincode')"
+                :value="old('wincode')"
+                type="text"
+                required
+                autocomplete="wincode"
+                :placeholder="__('e.g W978DEH')"
+            />
+
             <!-- Password -->
             <flux:input
                 name="password"
