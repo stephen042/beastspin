@@ -32,8 +32,9 @@
         <flux:spacer />
 
         {{-- things can go here --}}
-
-        <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
+        @auth
+            <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
+        @endauth
     </flux:sidebar>
 
     <!-- Mobile User Menu -->
