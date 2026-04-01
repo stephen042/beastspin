@@ -3,6 +3,7 @@
         :root {
             --wheel-size: 400px;
         }
+
         @media (max-width: 500px) {
             :root {
                 --wheel-size: 350px;
@@ -19,7 +20,7 @@
             font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
-        /* Outer casing of the machine */
+        /* 1. Ensure the wrapper has a lower stacking order than the sidebar */
         .wheel-wrapper {
             position: relative;
             width: var(--wheel-size);
@@ -29,9 +30,11 @@
             border-radius: 50%;
             box-shadow: 0 0 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1);
             border: 10px solid #333;
+            /* ADD THIS: Forces all children (pin/hub) to stay inside this layer */
+            z-index: 1;
         }
 
-        /* Indicator (The Pin) */
+        /* 2. Update the Pin z-index to be relative to the wrapper */
         .pin {
             position: absolute;
             top: -15px;
@@ -39,10 +42,29 @@
             transform: translateX(-50%);
             width: 40px;
             height: 50px;
-            z-index: 100;
+            /* Lower this so it doesn't fight the sidebar's 1000+ z-index */
+            z-index: 10;
             filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.5));
             transition: transform 0.1s;
-            /* Subtle wiggle when hit */
+        }
+
+        /* 3. Update the Center Hub z-index */
+        .center-hub {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            border-radius: 50%;
+            /* Ensure it's above the SVG but below the sidebar */
+            z-index: 5;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
         }
 
         #wheel-svg {
@@ -55,7 +77,7 @@
         }
 
         /* Center Button Decoration */
-        .center-hub {
+        /* .center-hub {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -70,7 +92,7 @@
             align-items: center;
             justify-content: center;
             pointer-events: none;
-        }
+        } */
 
         /* Spin Button Styling */
         .spin-trigger {
