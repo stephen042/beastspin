@@ -20,6 +20,12 @@
             font-family: 'Segoe UI', Roboto, sans-serif;
         }
 
+        @media (max-width: 500px) {
+            .game-container {
+                min-height: 80vh;
+            }
+        }
+
         /* 1. Ensure the wrapper has a lower stacking order than the sidebar */
         .wheel-wrapper {
             position: relative;
