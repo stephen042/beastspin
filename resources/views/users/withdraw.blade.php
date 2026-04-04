@@ -130,6 +130,74 @@
         [x-cloak] {
             display: none !important;
         }
+
+        /* ================= MOBILE RESPONSIVENESS ================= */
+        @media (max-width: 640px) {
+
+            .withdraw-page {
+                padding: 12px;
+                align-items: flex-start;
+                /* prevents vertical squash */
+                margin-top: 10px;
+            }
+
+            .withdraw-card {
+                max-width: 100%;
+                border-radius: 12px;
+            }
+
+            .card-header {
+                padding: 16px;
+            }
+
+            .card-header h2 {
+                font-size: 20px;
+            }
+
+            .card-header p {
+                font-size: 13px;
+            }
+
+            .card-body {
+                padding: 16px;
+            }
+
+            .form-group {
+                margin-bottom: 16px;
+            }
+
+            .form-label {
+                font-size: 13px;
+            }
+
+            .form-control {
+                padding: 10px 14px;
+                font-size: 14px;
+                border-radius: 6px;
+            }
+
+            .conditional-section {
+                padding: 12px;
+                border-radius: 10px;
+            }
+
+            .section-title {
+                font-size: 10px;
+            }
+
+            .btn-submit {
+                padding: 14px;
+                font-size: 15px;
+                border-radius: 6px;
+                position: sticky;
+                bottom: 0;
+            }
+
+            .card-footer {
+                padding: 12px;
+                font-size: 11px;
+            }
+        }
     </style>
 
     <div class="withdraw-page">

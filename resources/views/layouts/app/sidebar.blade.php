@@ -48,7 +48,9 @@
         {{-- <flux:spacer /> --}}
 
         <flux:dropdown position="top" align="end">
-            <flux:profile :initials="auth()->user()->initials()" icon-trailing="chevron-down" />
+            @auth
+                <flux:profile :initials="auth()->user()->initials()" icon-trailing="chevron-down" />
+            @endauth
 
             <flux:menu>
                 <flux:menu.radio.group>
