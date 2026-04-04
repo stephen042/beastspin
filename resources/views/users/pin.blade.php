@@ -89,6 +89,55 @@
         [x-cloak] {
             display: none !important;
         }
+
+        /* ================= MOBILE RESPONSIVENESS ================= */
+        @media (max-width: 640px) {
+
+            .verify-page {
+                padding: 12px;
+                align-items: flex-start;
+                /* prevents vertical squeeze */
+                /* min-height: 100dvh; */
+                max-height: 100dvh;
+                /* better mobile height handling */
+            }
+
+            .verify-card {
+                max-width: 100%;
+                padding: 20px;
+                border-radius: 14px;
+            }
+
+            /* Progress Bar */
+            .progress-container {
+                height: 5px;
+                margin: 16px 0 24px;
+            }
+
+            /* Inputs */
+            .input-group {
+                margin-bottom: 16px;
+            }
+
+            .input-label {
+                font-size: 11px;
+                margin-bottom: 6px;
+            }
+
+            .input-field {
+                padding: 12px;
+                font-size: 16px;
+                letter-spacing: 3px;
+                border-radius: 8px;
+            }
+
+            /* Button */
+            .btn-verify {
+                padding: 14px;
+                font-size: 15px;
+                border-radius: 8px;
+            }
+        }
     </style>
 
     <div class="verify-page" x-data="{
