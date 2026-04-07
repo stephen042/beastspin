@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Concerns\PasswordValidationRules;
 use App\Concerns\ProfileValidationRules;
 use App\Models\User;
+use App\Models\Wallets;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use App\Rules\ValidWincode;
@@ -26,10 +27,16 @@ class CreateNewUser implements CreatesNewUsers
             'wincode' => $this->wincodeRules(),
         ])->validate();
 
-        return User::create([
+        User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => $input['password'],
+        ]);
+
+        return Wallets::create([
+            'user_id' => User::latest()->first()->id,
+            'balance' => 0.00,
+            'tesla_balance' => 0.00,
         ]);
     }
 

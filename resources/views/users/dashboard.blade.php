@@ -6,7 +6,7 @@
                 <div class="stat-item border-b md:border-b-0 md:border-r border-zinc-100 dark:border-white/5">
                     <div class="stat-meta">
                         <span class="label text-orange-500">Total Portfolio</span>
-                        <h3 class="value text-zinc-900 dark:text-white">$124,500.00</h3>
+                        <h3 class="value text-zinc-900 dark:text-white">${{ number_format(auth()->user()->wallet->balance, 2) }}</h3>
                         <p class="sub-text text-zinc-500">Available for withdrawal</p>
                     </div>
                     <div class="icon-box bg-orange-500/10 text-orange-500">
@@ -17,7 +17,7 @@
                 <div class="stat-item relative">
                     <div class="stat-meta relative z-10">
                         <span class="label text-zinc-500">Fleet Status</span>
-                        <h3 class="value text-zinc-900 dark:text-white">2 <span
+                        <h3 class="value text-zinc-900 dark:text-white">{{ number_format(auth()->user()->wallet->tesla_balance, 0) }} <span
                                 class="text-sm opacity-50 font-normal">Cars</span></h3>
                     </div>
                     <div class="car-anchor">
@@ -41,121 +41,8 @@
                 </div>
             </a>
         </div>
-
-        <div class="history-card bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 shadow-sm">
-            <div class="card-header border-b border-zinc-100 dark:border-white/5">
-                <div class="title-group">
-                    <h4 class="text-zinc-900 dark:text-white font-bold uppercase tracking-tight">Recent Activity</h4>
-                    <p class="text-xs text-zinc-500 italic">Live results</p>
-                </div>
-                <a href="{{ route('withdraw') }}"
-                    class="withdraw-btn border border-orange-500/50 text-orange-500 hover:bg-orange-500 hover:text-white transition-all">
-                    WITHDRAW
-                </a>
-            </div>
-
-            <div class="table-wrapper overflow-x-auto" style="padding: 5px;">
-                <table class="w-full" style="border-spacing: 0 12px; border-collapse: separate;">
-                    <thead>
-                        <tr
-                            style="color: #a1a1aa; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.2em;">
-                            <th style="padding: 10px 24px; text-align: left;">Timestamp</th>
-                            <th style="padding: 10px 24px; text-align: left;">Event</th>
-                            <th style="padding: 10px 24px; text-align: center;">Asset Preview</th>
-                            <th style="padding: 10px 24px; text-align: right;">Net Profit</th>
-                        </tr>
-                    </thead>
-
-                    <tbody style="color: inherit;">
-                        <tr class="group transition-all duration-300 hover:translate-y-[-2px]"
-                            style="background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.1);border-radius: 16px;">
-
-                            <td
-                                style="padding: 20px 24px; border-radius: 16px 0 0 16px; border: 1px solid rgba(255,255,255,0.05); border-right: none;">
-                                <div style="font-size: 13px; font-weight: 600;">Mar 29, 2026</div>
-                                <div style="font-size: 10px; opacity: 0.5; margin-top: 4px;">14:30 GMT+1</div>
-                            </td>
-
-                            <td
-                                style="padding: 20px 24px; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05);">
-                                <span
-                                    style="background: linear-gradient(90deg, #f59e0b, #ea580c); color: white; padding: 4px 12px; border-radius: 8px; font-size: 9px; font-weight: 900; letter-spacing: 0.05em; display: inline-block; box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);">
-                                    TESLA UNLOCKED
-                                </span>
-                            </td>
-
-                            <td
-                                style="padding: 20px 24px; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center;">
-                                <div class="relative group-hover:scale-110 transition-transform duration-500"
-                                    style="width: 100px; height: 50px; margin: 0 auto; border-radius: 10px; overflow: hidden; background: #000;  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
-                                    <img src="{{ asset('assets/images/beastimages/tesla.jpg') }}"
-                                        style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;">
-                                </div>
-                            </td>
-
-                            <td
-                                style="padding: 20px 24px; border-radius: 0 16px 16px 0; border: 1px solid rgba(255,255,255,0.05); border-left: none; text-align: right;">
-                                <div
-                                    style="font-size: 18px; font-weight: 900; color: #22c55e; letter-spacing: -0.02em;">
-                                    JACKPOT</div>
-                                <div style="font-size: 10px; opacity: 0.6;">Asset Value: $42,990</div>
-                            </td>
-                        </tr>
-
-                        <tr class="transition-all duration-300 hover:bg-white/[0.02]" style="background: transparent;">
-                            <td style="padding: 20px 24px; border-radius: 16px 0 0 16px;">
-                                <div style="font-size: 13px; font-weight: 600;">Mar 29, 2026</div>
-                            </td>
-                            <td style="padding: 20px 24px;">
-                                <span
-                                    style="background: rgba(34, 197, 94, 0.1); color: #22c55e; padding: 4px 12px; border-radius: 8px; font-size: 9px; font-weight: 900; border: 1px solid rgba(34, 197, 94, 0.2);">
-                                    CASH WIN
-                                </span>
-                            </td>
-
-                            <td
-                                style="padding: 20px 24px; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center;">
-                                <div class="relative group-hover:scale-110 transition-transform duration-500"
-                                    style="width: 100px; height: 50px; margin: 0 auto; border-radius: 10px; overflow: hidden; background: #000;  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
-                                    <img src="{{ asset('assets/images/beastimages/cash.jpg') }}"
-                                        style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;">
-                                </div>
-                            </td>
-
-                            <td style="padding: 20px 24px; border-radius: 0 16px 16px 0; text-align: right;">
-                                <div style="font-size: 16px; font-weight: 800; color: #22c55e;">+$10,000.00</div>
-                            </td>
-                        </tr>
-
-                        <tr class="transition-all duration-300 hover:bg-white/[0.02]" style="background: transparent;">
-                            <td style="padding: 20px 24px; border-radius: 16px 0 0 16px; opacity: 0.5;">
-                                <div style="font-size: 13px;">Mar 28, 2026</div>
-                            </td>
-                            <td style="padding: 20px 24px;">
-                                <span
-                                    style="background: rgba(161, 161, 170, 0.1); color: #a1a1aa; padding: 4px 12px; border-radius: 8px; font-size: 9px; font-weight: 900;">
-                                    LOSS
-                                </span>
-                            </td>
-
-                            <td
-                                style="padding: 20px 24px; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center;">
-                                <div class="relative group-hover:scale-110 transition-transform duration-500"
-                                    style="width: 100px; height: 50px; margin: 0 auto; border-radius: 10px; overflow: hidden; background: #000;  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);">
-                                    <img src="{{ asset('assets/images/beastimages/lostcash.jpg') }}"
-                                        style="width: 100%; height: 100%; object-fit: cover; opacity: 0.9;">
-                                </div>
-                            </td>
-
-                            <td style="padding: 20px 24px; border-radius: 0 16px 16px 0; text-align: right;">
-                                <div style="font-size: 16px; font-weight: 800; color: #ef4444; opacity: 0.8;">-$500.00
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        
+        <livewire:users.spin-history />
 
     </div>
 </x-layouts::app>
@@ -203,7 +90,7 @@
     }
 
     .value {
-        font-size: 2.25rem;
+        font-size: 1.25rem;
         font-weight: 900;
         line-height: 1;
         margin: 0.5rem 0;

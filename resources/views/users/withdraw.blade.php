@@ -208,54 +208,7 @@
                 <p>Choose your preferred method to claim your prize.</p>
             </div>
 
-            <form action="#" class="card-body">
-                <div class="form-group">
-                    <label class="form-label">Withdrawal Method</label>
-                    <select x-model="method" class="form-control">
-                        <option value="bank">Bank Withdrawal</option>
-                        <option value="cash">Cash Delivery</option>
-                        <option value="car">Car Delivery (Tesla)</option>
-                    </select>
-                </div>
-
-                <div x-show="method === 'bank'" x-cloak class="conditional-section">
-                    <div class="section-title" style="color: #60a5fa;">Bank Account Details</div>
-                    <div class="form-group">
-                        <input type="number" placeholder="Amount to Withdraw ($)" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <input type="text" placeholder="Bank Name" class="form-control">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <input type="text" placeholder="Account Number" class="form-control">
-                    </div>
-                </div>
-
-                <div x-show="method === 'cash'" x-cloak class="conditional-section">
-                    <div class="section-title" style="color: #4ade80;">Physical Cash Delivery</div>
-                    <div class="form-group">
-                        <input type="number" placeholder="Withdraw Amount ($)" class="form-control">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <textarea placeholder="Your Full Delivery Address" rows="3" class="form-control"></textarea>
-                    </div>
-                </div>
-
-                <div x-show="method === 'car'" x-cloak class="conditional-section">
-                    <div class="section-title" style="color: #c084fc;">Tesla Vehicle Logistics</div>
-                    <div class="form-group">
-                        <label class="form-label" style="font-size: 11px;">Quantity</label>
-                        <input type="number" value="1" class="form-control">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <textarea placeholder="Shipping Address for Vehicle Delivery" rows="3" class="form-control"></textarea>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-submit">
-                    CONFIRM WITHDRAWAL
-                </button>
-            </form>
+            <livewire:users.withdrawal-form />
 
             <div class="card-footer">
                 Processing may take 3-5 business days depending on the method.
