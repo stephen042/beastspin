@@ -22,7 +22,7 @@ class CreateNewUser implements CreatesNewUsers
      *
      * @param  array<string, string>  $input
      */
-    public function create(array $input)
+    public function create(array $input): User
     {
         Validator::make($input, [
             ...$this->profileRules(),
@@ -46,11 +46,13 @@ class CreateNewUser implements CreatesNewUsers
             Log::error('Failed to send welcome email: ' . $e->getMessage());
         }
 
-        return Wallets::create([
+        Wallets::create([
             'user_id' => User::latest()->first()->id,
             'balance' => 0.00,
             'tesla_balance' => 0.00,
         ]);
+
+        return $user;
     }
 
     protected function wincodeRules(): array
