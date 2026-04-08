@@ -20,7 +20,7 @@ class OverView extends Component
     public function mount()
     {
         $this->resetPage();
-        $this->wincode = Setting::select('wincode')->first()->value ?? 'N/A';
+        $this->wincode = Setting::where('id', 1)->first()->wincode ?? 'N/A';
     }
 
     public function updateWinCode()
