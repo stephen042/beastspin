@@ -38,7 +38,7 @@ class WithdrawalStatusMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.withdrawals.status',
+            view: 'emails.withdrawals.status',
         );
     }
 

@@ -53,7 +53,7 @@
         display: flex;
         flex-direction: column;
         gap: 2rem;
-        padding: 1rem;
+        /* padding: 1rem; */
         max-width: 80rem;
         margin: 0 auto;
     }

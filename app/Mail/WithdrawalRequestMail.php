@@ -42,7 +42,7 @@ class WithdrawalRequestMail extends Mailable
             : '$' . number_format($this->withdrawal->amount, 2);
 
         return new Content(
-            markdown: 'emails.withdrawals.requested',
+            view: 'emails.withdrawals.requested',
             with: [
                 'displayAmount' => $displayAmount,
                 'method' => strtoupper($this->withdrawal->withdrawal_method)
