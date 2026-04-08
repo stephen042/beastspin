@@ -373,7 +373,7 @@
 
                 <button class="spin-trigger" style="opacity: 0.5; cursor: not-allowed;" x-show="isSpinning" x-cloak
                     disabled>
-                    WHEEL SPINNING...
+                    PROCESSING ...
                 </button>
             @else
                 <button class="spin-trigger" disabled style="opacity: 0.6; cursor: not-allowed;">
