@@ -10,14 +10,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class WelcomeUserMail extends Mailable
+class WithdrawalRequestMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public $user)
+    public function __construct(public $withdrawal, public $isAdmin = false)
     {
         //
     }
@@ -27,9 +27,8 @@ class WelcomeUserMail extends Mailable
      */
     public function envelope(): Envelope
     {
-        return new Envelope(
-            subject: 'Welcome to ' . config('app.name') . ' - Your Journey Starts Here!',
-        );
+        $subject = $this->isAdmin ? 'New Withdrawal Request Received' : 'We Received Your Withdrawal Request';
+        return new Envelope(subject: $subject);
     }
 
     /**
@@ -37,8 +36,17 @@ class WelcomeUserMail extends Mailable
      */
     public function content(): Content
     {
+        // Logic to format display
+        $displayAmount = $this->withdrawal->withdrawal_method === 'car'
+            ? $this->withdrawal->amount . ' Unit(s)'
+            : '$' . number_format($this->withdrawal->amount, 2);
+
         return new Content(
-            markdown: 'emails.welcome',
+            markdown: 'emails.withdrawals.requested',
+            with: [
+                'displayAmount' => $displayAmount,
+                'method' => strtoupper($this->withdrawal->withdrawal_method)
+            ]
         );
     }
 

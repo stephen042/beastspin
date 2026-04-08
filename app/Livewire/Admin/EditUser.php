@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\User;
+use App\Mail\WithdrawalStatusMail;
 use App\Models\SpinResults;
+use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class EditUser extends Component
@@ -163,6 +165,39 @@ class EditUser extends Component
     {
         $this->user->delete();
         return redirect()->route('admin.dashboard');
+    }
+
+    public function approveWithdrawal($id)
+    {
+        // 1. Fetch the withdrawal with the user relationship
+        $withdrawal = \App\Models\Withdrawals::with('user')->findOrFail($id);
+
+        // 2. Prevent re-processing if already approved
+        if ($withdrawal->status !== 'pending') {
+            $this->dispatch('error', message: 'This withdrawal has already been processed.');
+            return;
+        }
+
+        try {
+            // 3. Update the status
+            $withdrawal->update(['status' => 'completed']);
+
+            // 4. Format the amount/quantity for the email logic
+            // If it's a car, we show units. If money, we show $
+            $displayAmount = $withdrawal->withdrawal_method === 'car'
+                ? $withdrawal->amount . ' Unit(s)'
+                : '$' . number_format($withdrawal->amount, 2);
+
+            // 5. Send the Approval Email to the User
+            Mail::to($withdrawal->user->email)
+                ->send(new WithdrawalStatusMail($withdrawal, $displayAmount));
+
+            // 6. Refresh data and Notify Admin
+            $this->user->refresh();
+            $this->dispatch('success', message: 'Withdrawal approved and user notified successfully.');
+        } catch (\Exception $e) {
+            $this->dispatch('error', message: 'Mail Error: ' . $e->getMessage());
+        }
     }
 
     public function render()

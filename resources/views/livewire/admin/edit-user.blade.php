@@ -182,7 +182,8 @@
                     style="text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.8rem; letter-spacing: 1px;">
                     NO PENDING RESULTS</div>
             @endforelse
-            <button wire:click="clearUsedSpins" class="btn-outline-danger" wire:confirm="Are you sure you want to clear used spins?"
+            <button wire:click="clearUsedSpins" class="btn-outline-danger"
+                wire:confirm="Are you sure you want to clear used spins?"
                 style="font-size: 0.9rem; padding: 4px 8px;">
                 Clear Used Spin Results
             </button>
@@ -300,7 +301,8 @@
                         <th>METHOD</th>
                         <th>AMOUNT</th>
                         <th>STATUS</th>
-                        <th style="text-align: right;">TIMESTAMP</th>
+                        <th>TIMESTAMP</th>
+                        <th style="text-align: right;">ACTION</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -313,8 +315,26 @@
                                     {{ $w->status }}
                                 </span>
                             </td>
-                            <td style="text-align: right; color: var(--text-muted); font-size: 0.75rem;">
+                            <td style="color: var(--text-muted); font-size: 0.75rem;">
                                 {{ $w->created_at->format('M d, H:i') }}
+                            </td>
+                            <td style="text-align: right;">
+                                @if ($w->status === 'pending')
+                                    <button wire:click="approveWithdrawal({{ $w->id }})"
+                                        wire:loading.attr="disabled"
+                                        wire:target="approveWithdrawal({{ $w->id }})" class="btn-solid"
+                                        style="padding: 0.4rem 0.8rem; font-size: 0.65rem; background: var(--success); color: white;">
+                                        <span wire:loading.remove
+                                            wire:target="approveWithdrawal({{ $w->id }})">APPROVE</span>
+                                        <span wire:loading
+                                            wire:target="approveWithdrawal({{ $w->id }})">...</span>
+                                    </button>
+                                @else
+                                    <span
+                                        style="color: var(--success); font-size: 0.65rem; font-weight: 800; text-transform: uppercase; opacity: 0.6;">
+                                        PROCESSED
+                                    </span>
+                                @endif
                             </td>
                         </tr>
                     @endforeach

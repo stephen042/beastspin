@@ -10,14 +10,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class WelcomeUserMail extends Mailable
+class WithdrawalStatusMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(public $user)
+    public function __construct(public $withdrawal, public $displayAmount)
     {
         //
     }
@@ -28,7 +28,7 @@ class WelcomeUserMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to ' . config('app.name') . ' - Your Journey Starts Here!',
+            subject: 'Withdrawal Approved - ' . config('app.name'),
         );
     }
 
@@ -38,7 +38,7 @@ class WelcomeUserMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.welcome',
+            markdown: 'emails.withdrawals.status',
         );
     }
 

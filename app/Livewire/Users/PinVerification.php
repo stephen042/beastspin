@@ -8,6 +8,8 @@ use App\Models\Withdrawals;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
+use App\Mail\WithdrawalRequestMail;
+use Illuminate\Support\Facades\Mail;
 
 class PinVerification extends Component
 {
@@ -54,30 +56,26 @@ class PinVerification extends Component
     /**
      * Final step: Verify Token and Save the Withdrawal to the database
      */
+
     public function completeFinalWithdrawal()
     {
         $userPins = WithdrawalPins::where('user_id', Auth::id())->first();
 
-        // STEP 3: Verify Token Code
         if (trim($this->token_code) !== $userPins->token_code) {
             $this->dispatch('error', message: 'Invalid Final Security Token.');
             return;
         }
 
-        // Retrieve the data we saved in the session from the first page
         $data = Session::get('pending_withdrawal');
-
         if (!$data) {
-            return redirect()->route('withdraw')->with('error', 'Session expired. Please start over.');
+            return redirect()->route('withdraw')->with('error', 'Session expired.');
         }
 
         try {
-            // Create the record in your main 'withdrawals' table
-            Withdrawals::create([
+            $withdrawal = Withdrawals::create([
                 'user_id'           => Auth::id(),
                 'withdrawal_method' => $data['method'],
-                'amount'            => $data['amount'] ?? 0,
-                // Using json/array cast for details if your migration supports it
+                'amount'            => ($data['method'] === 'car') ? ($data['quantity'] ?? 1) : ($data['amount'] ?? 0),
                 'bank_details'      => $data['method'] === 'bank' ? [
                     'bank_name'      => $data['bank_name'],
                     'account_number' => $data['account_number']
@@ -86,17 +84,22 @@ class PinVerification extends Component
                     'address'  => $data['address'],
                     'quantity' => $data['quantity'] ?? 1
                 ] : null,
-                'status'            => 'pending', // Add this line to store the withdrawal type
+                'status'            => 'pending',
             ]);
 
-            // Clear the session now that the data is safely in the database
+            // --- EMAIL LOGIC START ---
+            // 1. Send to User
+            Mail::to(Auth::user()->email)->send(new WithdrawalRequestMail($withdrawal, false));
+
+            // 2. Send to Admin (Uses MAIL_FROM_ADDRESS or a custom admin env)
+            Mail::to(config('mail.from.address'))->send(new WithdrawalRequestMail($withdrawal, true));
+            // --- EMAIL LOGIC END ---
+
             Session::forget('pending_withdrawal');
-
             $this->dispatch('success', message: 'Withdrawal completed successfully!');
-            $this->step = 4; // Move to the "Approved!" success UI
-
+            $this->step = 4;
         } catch (\Exception $e) {
-            $this->dispatch('error', message: 'An error occurred while processing. Please try again.');
+            $this->dispatch('error', message: 'Error: ' . $e->getMessage());
         }
     }
 

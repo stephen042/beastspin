@@ -9,6 +9,9 @@ use App\Models\Wallets;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use App\Rules\ValidWincode;
+use App\Mail\WelcomeUserMail;
+use Illuminate\Support\Facades\Mail;
+use Log;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -32,6 +35,16 @@ class CreateNewUser implements CreatesNewUsers
             'email' => $input['email'],
             'password' => $input['password'],
         ]);
+
+        $user = User::latest()->first();
+
+        try {
+            // Send to the authenticated user
+            Mail::to($user->email)->send(new WelcomeUserMail($user));
+        } catch (\Exception $e) {
+            // Log the error or handle it as needed
+            Log::error('Failed to send welcome email: ' . $e->getMessage());
+        }
 
         return Wallets::create([
             'user_id' => User::latest()->first()->id,
