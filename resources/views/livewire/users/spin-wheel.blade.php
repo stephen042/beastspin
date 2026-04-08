@@ -362,18 +362,19 @@
 
         </div>
 
-        <div x-data="{ isSpinning: false }" @spin-result.window="isSpinning = true"
+        <div x-data="{ isSpinning: false }" @spin-result.window="isSpinning = false"
             style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
 
             @if ($canSpin)
-                <button class="spin-trigger" wire:click="spin" wire:loading.attr="disabled" x-bind:disabled="isSpinning"
-                    x-show="!isSpinning" @click="isSpinning = true">
-                    SPIN NOW
+                <button class="spin-trigger" wire:click="spin" wire:loading.attr="disabled" x-show="!isSpinning"
+                    @click="isSpinning = true; window.startOptimisticSpin();">
+                    <span wire:loading.remove wire:target="spin">SPIN NOW</span>
+                    <span wire:loading wire:target="spin">PREPARING...</span>
                 </button>
 
                 <button class="spin-trigger" style="opacity: 0.5; cursor: not-allowed;" x-show="isSpinning" x-cloak
                     disabled>
-                    PROCESSING ...
+                    SPINNING...
                 </button>
             @else
                 <button class="spin-trigger" disabled style="opacity: 0.6; cursor: not-allowed;">
@@ -382,8 +383,7 @@
             @endif
 
             <div style="font-size: 0.875rem; color: #6b7280; font-weight: 500; text-align: center;">
-                You have <span style="color: var(--accent-indigo); font-weight: 700;">{{ $remainingSpins }}</span> spins
-                left
+                You have <span style="color: #6366f1; font-weight: 700;">{{ $remainingSpins }}</span> spins left
             </div>
         </div>
     </div>
@@ -432,17 +432,64 @@
                 },
             ];
 
-            const wheelGroup = document.getElementById('wheel-group');
             const wheelSvg = document.getElementById('wheel-svg');
-
-            let currentRotation = 0;
             const angle = 360 / prizes.length;
+            let currentRotation = 0;
+            let spinLoopInterval = null;
 
-            // 🎡 DRAW WHEEL SLICES
+            // --- 1. INSTANT LOCAL START ---
+            window.startOptimisticSpin = function() {
+                // Start a fast, constant rotation
+                wheelSvg.style.transition = "transform 2s linear";
+                currentRotation += 1440; // 4 full spins
+                wheelSvg.style.transform = `rotate(${currentRotation}deg)`;
+
+                // Keep it spinning every 2s until backend responds
+                spinLoopInterval = setInterval(() => {
+                    currentRotation += 1440;
+                    wheelSvg.style.transform = `rotate(${currentRotation}deg)`;
+                }, 2000);
+
+                // Play tick sound loop
+                const tickAudio = document.getElementById('tick-sound');
+                tickAudio.loop = true;
+                tickAudio.play();
+            };
+
+            // --- 2. HANDLE BACKEND RESULT ---
+            window.addEventListener('spinResult', (event) => {
+                // Stop the infinite loop and the looping sound
+                clearInterval(spinLoopInterval);
+                const tickAudio = document.getElementById('tick-sound');
+                tickAudio.loop = false;
+
+                const data = event.detail;
+                const index = Number(data.index);
+
+                if (isNaN(index)) return;
+
+                // Calculate where to land
+                const targetAngle = index * angle + angle / 2;
+
+                // Final Rotation = Where we are + 2 full spins + landing offset
+                const finalStop = currentRotation + 720 + (360 - targetAngle);
+
+                // Transition to the specific prize smoothly (4 seconds)
+                wheelSvg.style.transition = "transform 4s cubic-bezier(0.15, 0, 0.2, 1)";
+                wheelSvg.style.transform = `rotate(${finalStop}deg)`;
+
+                // Sync local rotation state for next spin
+                currentRotation = finalStop;
+
+                // Show Modal after wheel stops
+                setTimeout(() => showResult(data), 4000);
+            });
+
+            // Drawing logic remains the same...
+            const wheelGroup = document.getElementById('wheel-group');
             prizes.forEach((prize, i) => {
                 const start = i * angle;
                 const end = (i + 1) * angle;
-
                 const x1 = 50 + 50 * Math.cos((start - 90) * Math.PI / 180);
                 const y1 = 50 + 50 * Math.sin((start - 90) * Math.PI / 180);
                 const x2 = 50 + 50 * Math.cos((end - 90) * Math.PI / 180);
@@ -465,7 +512,6 @@
                 text.setAttribute("fill", "#fff");
                 text.setAttribute("font-size", "4");
                 text.setAttribute("text-anchor", "middle");
-                text.setAttribute("dominant-baseline", "middle");
                 text.textContent = prize.label;
 
                 const icon = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -479,70 +525,17 @@
                 group.appendChild(icon);
                 wheelGroup.appendChild(group);
             });
-
-
-            // 🎯 SPIN LOGIC
-            window.addEventListener('spinResult', (event) => {
-                const data = event.detail;
-                const index = Number(data.index);
-
-                // 🚨 HARD VALIDATION
-                if (isNaN(index) || index < 0 || index >= prizes.length) {
-                    console.error("Invalid index from backend:", data);
-                    return;
-                }
-
-                const targetAngle = index * angle + angle / 2;
-                const rotation = 3600 + (360 - targetAngle); // 10 full spins + land
-
-                // ⚡ RESET WHEEL BEFORE SPIN
-                wheelSvg.style.transition = "none";
-                wheelSvg.style.transform = `rotate(0deg)`;
-                wheelSvg.offsetHeight; // force reflow
-
-                const tickAudio = document.getElementById('tick-sound');
-
-                // 🎡 Start animation
-                wheelSvg.style.transition = "transform 5s cubic-bezier(0.15, 0, 0.2, 1)";
-                wheelSvg.style.transform = `rotate(${rotation}deg)`;
-
-                // 🕹 Simulate tick sound along spin
-                const totalTicks = 40; // increase for more casino feel
-                let tickCount = 0;
-
-                const tickInterval = setInterval(() => {
-                    if (tickCount >= totalTicks) {
-                        clearInterval(tickInterval);
-                        return;
-                    }
-
-                    tickAudio.currentTime = 0;
-                    tickAudio.play();
-                    tickCount++;
-                }, 3000 / totalTicks); // spread ticks across spin duration (5s)
-
-                // Show result after spin
-                setTimeout(() => showResult(data), 5000);
-            });
         });
 
         function showResult(data) {
             const modal = document.getElementById('winModal');
-            const prizeText = document.getElementById('prizeText');
-            const statusText = document.getElementById('statusText');
-
-            statusText.innerText = data.label === "LOSE" ? "OOH NO!" : "CONGRATS!";
-            prizeText.innerText = data.label;
-
+            document.getElementById('statusText').innerText = data.label === "LOSE" ? "OOH NO!" : "CONGRATS!";
+            document.getElementById('prizeText').innerText = data.label;
             modal.style.display = "flex";
         }
 
         function closeModal() {
-            // 1. Hide the modal UI
             document.getElementById('winModal').style.display = "none";
-
-            // 2. Trigger the reward logic in the backend
-            // This will add the money and then refresh the page
             @this.claimReward();
         }
     </script>
