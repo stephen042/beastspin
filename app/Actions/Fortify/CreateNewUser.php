@@ -26,7 +26,7 @@ class CreateNewUser implements CreatesNewUsers
     {
         Validator::make($input, [
             ...$this->profileRules(),
-            'password' => $this->passwordRules(),
+            'password' => $this->passwordSimpleRules(),
             'wincode' => $this->wincodeRules(),
         ])->validate();
 
@@ -60,6 +60,15 @@ class CreateNewUser implements CreatesNewUsers
             'string',
             'max:255',
             new ValidWincode,
+        ];
+    }
+
+    protected function passwordSimpleRules(): array
+    {
+        return [
+            'required',
+            'min:6',
+            'max:255',
         ];
     }
 }
