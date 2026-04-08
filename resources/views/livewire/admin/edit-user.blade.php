@@ -108,9 +108,19 @@
         <div class="form-group" style="padding-bottom: 1rem;">
             <div style="flex: 1; min-width: 250px;">
                 <span class="module-title" style="margin-bottom: 0.5rem; display: block;">Spin Limit</span>
-                <div style="display: flex; gap: 0.5rem;">
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
                     <input type="number" wire:model="total_spins" class="premium-input">
-                    <button wire:click="updateAllocation" class="btn-solid">Update</button>
+
+                    <button wire:click="updateAllocation" wire:loading.attr="disabled" class="btn-solid"
+                        style="position: relative; min-width: 100px;">
+                        <span wire:loading.remove wire:target="updateAllocation">
+                            Update
+                        </span>
+
+                        <span wire:loading wire:target="updateAllocation">
+                            <i class="fas fa-spinner fa-spin"></i> Updating...
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -153,7 +163,17 @@
                             <option value="{{ $idx }}">{{ $p['icon'] }} {{ $p['label'] }}</option>
                         @endforeach
                     </select>
-                    <button wire:click="addSpinResult" class="btn-solid">Add to Queue</button>
+                    <button wire:click="addSpinResult" wire:loading.attr="disabled" wire:target="addSpinResult"
+                        class="btn-solid"
+                        style="min-width: 140px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <span wire:loading.remove wire:target="addSpinResult">
+                            Add to Queue
+                        </span>
+
+                        <span wire:loading wire:target="addSpinResult">
+                            Processing...
+                        </span>
+                    </button>
                 </div>
             </div>
         </div>
