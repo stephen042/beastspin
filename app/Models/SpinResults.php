@@ -15,6 +15,7 @@ class SpinResults extends Model
         'prize_label',
         'prize_value',
         'amount',
+        'slice_index',
         'color',
         'is_used',
         'used_at',

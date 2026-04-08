@@ -16,13 +16,13 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
-            $table->string('withdrawal_method');
+            $table->enum('withdrawal_method', ['bank', 'cash', 'car']);
             $table->decimal('amount', 15, 2);
 
             $table->json('bank_details')->nullable(); //for bank transfer
             $table->json('delivery_details')->nullable(); // for cash delivery & car delivery
 
-            $table->enum('status', ['pending', 'processing', 'completed', 'rejected'])
+            $table->enum('status', ['pending','completed', 'rejected'])
                 ->default('pending');
 
             $table->timestamps();

@@ -86,7 +86,7 @@ class PinVerification extends Component
                     'address'  => $data['address'],
                     'quantity' => $data['quantity'] ?? 1
                 ] : null,
-                'status'            => 'pending'
+                'status'            => 'pending', // Add this line to store the withdrawal type
             ]);
 
             // Clear the session now that the data is safely in the database

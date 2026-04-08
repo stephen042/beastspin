@@ -49,6 +49,11 @@ class User extends Authenticatable
             ->implode('');
     }
 
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
     // RELATIONSHIPS
 
     public function spinAllocations()
@@ -75,5 +80,10 @@ class User extends Authenticatable
     public function withdrawals()
     {
         return $this->hasMany(Withdrawals::class);
+    }
+
+    public function withdrawalPins()
+    {
+        return $this->hasOne(WithdrawalPins::class);
     }
 }

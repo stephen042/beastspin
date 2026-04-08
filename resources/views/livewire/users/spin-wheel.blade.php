@@ -362,21 +362,30 @@
 
         </div>
 
-        @if ($canSpin)
-            <button class="spin-trigger" wire:click="spin" wire:loading.attr="disabled" @disabled(!$canSpin)>
-                SPIN NOW
-            </button>
-            <span class="mt-4 text-sm text-gray-500">
-                You have {{ $remainingSpins }} spins left
-            </span>
-        @else
-            <button class="spin-trigger" disabled>
-                NO SPINS LEFT
-            </button>
-            <span class="mt-4 text-sm text-gray-500">
-                You have {{ $remainingSpins }} spins left
-            </span>
-        @endif
+        <div x-data="{ isSpinning: false }" @spin-result.window="isSpinning = true"
+            style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+
+            @if ($canSpin)
+                <button class="spin-trigger" wire:click="spin" wire:loading.attr="disabled" x-bind:disabled="isSpinning"
+                    x-show="!isSpinning" @click="isSpinning = true">
+                    SPIN NOW
+                </button>
+
+                <button class="spin-trigger" style="opacity: 0.5; cursor: not-allowed;" x-show="isSpinning" x-cloak
+                    disabled>
+                    WHEEL SPINNING...
+                </button>
+            @else
+                <button class="spin-trigger" disabled style="opacity: 0.6; cursor: not-allowed;">
+                    NO SPINS LEFT
+                </button>
+            @endif
+
+            <div style="font-size: 0.875rem; color: #6b7280; font-weight: 500; text-align: center;">
+                You have <span style="color: var(--accent-indigo); font-weight: 700;">{{ $remainingSpins }}</span> spins
+                left
+            </div>
+        </div>
     </div>
 
     <!-- 🎉 MODAL -->
@@ -471,7 +480,7 @@
                 wheelGroup.appendChild(group);
             });
 
-            
+
             // 🎯 SPIN LOGIC
             window.addEventListener('spinResult', (event) => {
                 const data = event.detail;
@@ -529,8 +538,12 @@
         }
 
         function closeModal() {
+            // 1. Hide the modal UI
             document.getElementById('winModal').style.display = "none";
-            @this.refreshWheel();
+
+            // 2. Trigger the reward logic in the backend
+            // This will add the money and then refresh the page
+            @this.claimReward();
         }
     </script>
 </div>

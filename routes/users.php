@@ -2,7 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->group(function () { 
+Route::middleware(['auth','verified'])->group(function () { 
 
     Route::view('/spin', 'users.spin')->name('spin');
     Route::view('/withdraw', 'users.withdraw')->name('withdraw');

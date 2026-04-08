@@ -24,4 +24,9 @@ class WithdrawalPins extends Model
     {
         return $this->belongsTo(Withdrawals::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

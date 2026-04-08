@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('prize_label');   // e.g "$10,000", "LOSE"
             $table->string('prize_value');   // 💰, ❌, etc
             $table->integer('amount');   // 100000 , 0, etc
-            $table->integer('slice_index'); // 0,1,2,3,4
+            $table->integer('slice_index'); // 0,1,2,3,4 
             $table->string('color')->nullable();
 
             $table->boolean('is_used')->default(false); // has user spun this?
