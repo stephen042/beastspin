@@ -38,7 +38,7 @@
                 type="text"
                 required
                 autocomplete="wincode"
-                :placeholder="__('e.g W978DEH')"
+                :placeholder="__('')"
             />
 
             <!-- Password -->
